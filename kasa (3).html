@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kasa Lípa</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f4fbf6;color:#14171c;overflow-x:hidden}
+body:before,body:after{content:"";position:fixed;z-index:-1;pointer-events:none;font-size:150px;line-height:1;opacity:.10;filter:saturate(.9)}
+body:before{content:"🍃";left:-30px;top:70px;transform:rotate(-28deg)}
+body:after{content:"🌿";right:-35px;bottom:45px;transform:rotate(22deg)}
+.app{width:min(100%,620px);min-height:100vh;margin:auto;background:#f8f9fb;padding:24px 18px 40px}
+header{display:flex;align-items:center;justify-content:center;margin-bottom:24px;position:relative}
+.leaf-decoration{position:absolute;pointer-events:none;user-select:none;opacity:.08;font-size:90px;z-index:0}
+.leaf-one{left:-20px;top:5px;transform:rotate(-20deg)}
+.leaf-two{right:-20px;top:130px;transform:rotate(18deg)}
+.brand{position:relative;z-index:1}
+.brand{display:flex;align-items:center;gap:12px}
+header .icon{width:48px;height:48px;border-radius:15px;background:#237a45;color:white;display:grid;place-items:center;font-size:25px;box-shadow:0 8px 20px rgba(35,122,69,.22)}
+h1{margin:0;font-size:30px;letter-spacing:-1.2px;color:#175b34;text-align:center}
+.subtitle{font-size:13px;color:#7a808a;margin-top:2px}
+.product{background:#fff;border:1px solid #dceee1;border-radius:20px;padding:18px;margin-bottom:13px;box-shadow:0 5px 18px rgba(30,35,45,.05)}
+.product-top{display:flex;gap:13px;align-items:center}
+.emoji{width:48px;height:48px;border-radius:15px;background:#f1f3f6;display:grid;place-items:center;font-size:27px}
+h2{margin:0;font-size:19px}
+.price{color:#7b818b;margin-top:4px;font-size:13px}
+.controls{display:flex;align-items:center;margin-top:16px;gap:10px}
+.stepper{display:flex;align-items:center;gap:7px}
+.minus,.plus{width:40px;height:40px;border-radius:12px;background:#237a45;color:#fff;font-size:23px}
+.qty-input{width:70px;height:40px;border:1px solid #dfe2e7;border-radius:11px;background:#f7f8fa;text-align:center;font:inherit;font-weight:750;outline:none}
+.qty-input:focus{border-color:#171a20;box-shadow:0 0 0 3px rgba(23,26,32,.08)}
+.add{height:40px;flex:1;border:0;border-radius:12px;background:#237a45;color:#fff;font-weight:750}
+button{cursor:pointer;border:0}
+button:active{transform:scale(.98)}
+.order{margin-top:24px;background:#175b34;color:#fff;border-radius:22px;padding:19px;box-shadow:0 12px 28px rgba(17,20,27,.16)}
+.order h2{font-size:20px;margin-bottom:12px}
+#empty{color:#8f96a1;padding:7px 0 13px}
+.item{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #30343b;font-size:14px}
+.total{display:flex;justify-content:space-between;align-items:center;padding-top:16px;font-size:22px;font-weight:850}
+.payment{margin-top:15px;padding-top:15px;border-top:1px solid #30343b}
+.payment-title{font-size:14px;font-weight:750;margin-bottom:10px}
+.money-row{display:flex;gap:9px}
+.money-input{flex:1;min-width:0;height:46px;border:1px solid #444951;border-radius:12px;background:#252930;color:#fff;padding:0 13px;font-size:17px;outline:none}
+.money-input:focus{border-color:#fff}
+.change-box{margin-top:10px;background:#fff;color:#14171c;border-radius:14px;padding:13px 14px;display:flex;justify-content:space-between;align-items:center}
+.change-label{font-size:13px;color:#707680}
+.change-value{font-size:21px;font-weight:850}
+.change-box.insufficient{background:#ffe8e8;color:#a31515}
+.cancel{width:100%;margin-top:11px;height:44px;border-radius:12px;background:#2b2f36;color:#fff;font-weight:700}
+@media(max-width:480px){.controls{flex-wrap:wrap}.add{min-width:100%}.stepper{width:100%;justify-content:center}.app{padding:18px 13px 30px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="leaf-decoration leaf-one">🍃</div>
+  <div class="leaf-decoration leaf-two">🌿</div>
+  <header>
+  <div class="brand">
+    <span class="icon">🧾</span>
+    <div><h1>Kasa Lípa</h1><div class="subtitle">Rychlá pokladna</div></div>
+  </div>
+</header>
+
+  <section class="product">
+    <div class="product-top"><span class="emoji">🥩</span><div><h2>Kýta</h2><div class="price">5 dkg = 25 Kč</div></div></div>
+    <div class="controls">
+      <div class="stepper">
+        <button class="minus" onclick="change('kyta',-1)">−</button>
+        <input class="qty-input" id="kytaQty" type="number" min="5" step="5" value="5" onchange="setQty('kyta', this.value)">
+        <span>dkg</span>
+        <button class="plus" onclick="change('kyta',1)">+</button>
+      </div>
+      <button class="add" onclick="addItem('kyta')">Přidat kýtu</button>
+    </div>
+  </section>
+
+  <section class="product">
+    <div class="product-top"><span class="emoji">🌭</span><div><h2>Párek</h2><div class="price">1 ks = 30 Kč</div></div></div>
+    <div class="controls">
+      <div class="stepper">
+        <button class="minus" onclick="change('parek',-1)">−</button>
+        <input class="qty-input" id="parekQty" type="number" min="1" step="1" value="1" onchange="setQty('parek', this.value)">
+        <span>ks</span>
+        <button class="plus" onclick="change('parek',1)">+</button>
+      </div>
+      <button class="add" onclick="addItem('parek')">Přidat párky</button>
+    </div>
+  </section>
+
+  <section class="product">
+    <div class="product-top"><span class="emoji">🌭</span><div><h2>Klobása</h2><div class="price">1 ks = 40 Kč</div></div></div>
+    <div class="controls">
+      <div class="stepper">
+        <button class="minus" onclick="change('klobasa',-1)">−</button>
+        <input class="qty-input" id="klobasaQty" type="number" min="1" step="1" value="1" onchange="setQty('klobasa', this.value)">
+        <span>ks</span>
+        <button class="plus" onclick="change('klobasa',1)">+</button>
+      </div>
+      <button class="add" onclick="addItem('klobasa')">Přidat klobásy</button>
+    </div>
+  </section>
+
+  <section class="order">
+    <h2>Objednávka</h2>
+    <div id="empty">Zatím nic</div>
+    <div id="items"></div>
+    <div class="total"><span>CELKEM</span><span id="total">0 Kč</span></div>
+
+    <div class="payment">
+      <div class="payment-title">💳 Platba zákazníka</div>
+      <div class="money-row">
+        <input id="paid" class="money-input" type="number" min="0" step="1" placeholder="Kolik zákazník dal?">
+      </div>
+      <div id="changeBox" class="change-box">
+        <span class="change-label">Vrátit zákazníkovi</span>
+        <span id="change" class="change-value">0 Kč</span>
+      </div>
+    </div>
+
+    <button class="cancel" onclick="clearOrder()">🗑️ Zrušit objednávku</button>
+  </section>
+</div>
+
+<script>
+const products = {
+  kyta: {name:'Kýta', unit:'dkg', step:5, price:25},
+  parek: {name:'Párek', unit:'ks', step:1, price:30},
+  klobasa: {name:'Klobása', unit:'ks', step:1, price:40}
+};
+const qty = {kyta:5, parek:1, klobasa:1};
+const order = {kyta:0, parek:0, klobasa:0};
+
+function change(id, dir) {
+  const p = products[id];
+  qty[id] = Math.max(p.step, qty[id] + dir*p.step);
+  document.getElementById(id+'Qty').value = qty[id];
+}
+function readQty(id) {
+  const p = products[id];
+  let value = Number(document.getElementById(id+'Qty').value);
+  if (!Number.isFinite(value) || value < p.step) value = p.step;
+  value = Math.round(value);
+  qty[id] = value;
+  document.getElementById(id+'Qty').value = value;
+  return value;
+}
+function addItem(id) {
+  readQty(id);
+  order[id] += qty[id];
+  render();
+}
+function render() {
+  const box = document.getElementById('items');
+  const empty = document.getElementById('empty');
+  let total = 0, html = '';
+  for (const id in products) {
+    const p = products[id];
+    if (order[id] > 0) {
+      const count = order[id] / p.step;
+      const subtotal = count * p.price;
+      total += subtotal;
+      html += `<div class="item"><span>${p.name} × ${count} ${p.unit}</span><strong>${subtotal} Kč</strong></div>`;
+    }
+  }
+  box.innerHTML = html;
+  empty.style.display = html ? 'none' : 'block';
+  document.getElementById('total').textContent = total + ' Kč';
+  updateChange(total);
+}
+function updateChange(total) {
+  const paid = Number(document.getElementById('paid').value) || 0;
+  const box = document.getElementById('changeBox');
+  const value = document.getElementById('change');
+  const diff = paid - total;
+  value.textContent = Math.max(0, diff) + ' Kč';
+  box.classList.toggle('insufficient', paid > 0 && diff < 0);
+  if (paid > 0 && diff < 0) {
+    value.textContent = 'Chybí ' + Math.abs(diff) + ' Kč';
+  }
+}
+function clearOrder() {
+  for (const id in order) order[id] = 0;
+  document.getElementById('paid').value = '';
+  render();
+}
+document.getElementById('paid').addEventListener('input', () => {
+  let total = 0;
+  for (const id in products) {
+    const p = products[id];
+    if (order[id] > 0) total += (order[id] / p.step) * p.price;
+  }
+  updateChange(total);
+});
+document.querySelectorAll('.qty-input').forEach(input => {
+  input.addEventListener('change', () => readQty(input.id.replace('Qty','')));
+});
+render();
+</script>
+</body>
+</html>
